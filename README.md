@@ -1,7 +1,7 @@
 # sayure
 **Repository "Sayure" - Aplikasi Mobile Food Market untuk Makanan Vegan**
 
-Selamat datang di repositori resmi "Sayure" - sebuah aplikasi mobile revolusioner yang menggabungkan kecanggihan teknologi full stack dengan tujuan meningkatkan aksesibilitas makanan vegan yang sehat. Dalam proyek ini, kami mengintegrasikan Laravel sebagai backend yang handal dan Kotlin sebagai bahasa pemrograman untuk pengembangan aplikasi mobile.
+Selamat datang di repositori resmi "Sayure" - sebuah aplikasi mobile revolusioner yang menggabungkan kecanggihan teknologi full stack dengan tujuan meningkatkan aksesibilitas makanan vegan yang sehat. Dalam proyek ini, mengintegrasikan Laravel sebagai backend yang handal dan Kotlin sebagai bahasa pemrograman untuk pengembangan aplikasi mobile.
 
 ### Tentang "Sayure"
 
@@ -34,11 +34,10 @@ Selamat datang di repositori resmi "Sayure" - sebuah aplikasi mobile revolusione
 
 ### Cara Menggunakan Repository Ini
 
-1. Clone repository ke perangkat lokal Anda dengan perintah `git clone https://github.com/username/sayure.git`.
+1. Clone repository ke perangkat lokal Anda dengan perintah `git clone https://github.com/AqilahFedura/sayure.git`.
 2. Ikuti petunjuk instalasi yang disediakan di direktori backend (Laravel) dan mobile app (Kotlin).
 
 ### Kontribusi
 
-saya sangat mengundang kontribusi dari komunitas. Jika Anda menemui bug atau memiliki ide untuk perbaikan, silakan buka *issue* atau kirim *pull request*. Baca [panduan kontribusi](CONTRIBUTING.md) untuk informasi lebih lanjut.
-
+saya sangat mengundang kontribusi dari komunitas. Jika Anda menemui bug atau memiliki ide untuk perbaikan, silakan buka *issue* atau kirim *pull request*.
 Mari bersama-sama menciptakan perubahan positif dalam mendukung gaya hidup sehat dan ramah lingkungan melalui "Sayure"! 🌱📱✨
