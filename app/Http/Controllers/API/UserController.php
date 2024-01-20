@@ -2,56 +2,100 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Actions\Fortify\PasswordValidationRules;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
-use Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth; //mengimport Auth
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash; // mengimport hash
+use Exception; // mengimport Exceptiom
 
 class UserController extends Controller
 {
-    public function login (request $request)
+    use PasswordValidationRules; // Trait untuk aturan validasi password
+
+    public function login(Request $request)
     {
         try {
-            //validasi input
+            // Validasi input
             $request->validate([
-                'email'=>'email|required',
+                'email' => 'email|required',
                 'password' => 'required'
             ]);
-        }
-        //mengecek credentials (login)
-        $credentials = Request(['email', 'password']);
-        if(!Auth::attempt($credentials)){ //melakukan pengecekan
-            //scanario pas fail atau error
-            return ResponseFormatter::error([// ini itu sesuai di response formatter (ini bagian data)
-                'massage'=> 'Unauthorized' // pesannya
-            ],    'Authentication Failed', 500); // ini bagian kodenya
-    
 
+            // Mengecek credentials (login)
+            $credentials = $request->only('email', 'password');
+            if (!Auth::attempt($credentials)) {
+                // Skenario saat gagal atau error
+                return ResponseFormatter::error([
+                    'message' => 'Unauthorized'
+                ], 'Authentication Failed', 500);
             }
 
-            //jika hash tidak sesuai maka beri error
-            $user = User::where('email', $request->email)->first(); // ini tu cuman satu diambil emailnya karena emailkan pasti satu yah, sama unik
-            if(!hash::check($request->password, $user->password , [])){ // nah ini mengecek apakah inputan user passwordnya sama dengan yang ada di database
-                throw new \Exception('invalid Credentials'); //ini kalau error
-
+            // Jika hash tidak sesuai, beri error
+            $user = User::where('email', $request->email)->first();
+            if (!Hash::check($request->password, $user->password, [])) {
+                throw new \Exception('Invalid Credentials');
             }
-            //jika berhasil loginkan
-            $tokenResult = $user->createToken('authToken');
-            $tokenResult = $tokenResult->plainTextToken;
+
+            // Jika berhasil login
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user
             ], 'Authenticated');
 
-        //ini kita buat catch semisal error diluar login
-        } catch(Exception $error){ // ini masih error gatau knp
-            return ResponseFormatter:error([
-                'massage' => 'something went wrong'
+        } catch (Exception $error) {
+            // Menangani kesalahan dan memberikan respons error
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
                 'error' => $error
-            ]) 'Authenticated');
+            ], 'Authentication Failed');
         }
     }
 
-    public function res
+    public function register(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'], // Validasi nama
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'], // Validasi email
+                'address' => ['required', 'string'], // Validasi alamat
+                'phoneNumber' => ['required', 'string'], // Validasi nomor telepon
+                'houseNumber' => ['required', 'string'], // Validasi nomor rumah
+                'city' => ['required', 'string'], // Validasi kota
+                'password' => $this->passwordRules(), // Menggunakan aturan validasi password dari trait
+            ]);
+
+            // Membuat user baru
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'address' => $request->address,
+                'phoneNumber' => $request->phoneNumber,
+                'houseNumber' => $request->houseNumber,
+                'city' => $request->city,
+                'password' => Hash::make($request->password),
+            ]);
+
+            // Membuat token untuk user baru
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+            // Memberikan respons sukses
+            return ResponseFormatter::success([
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer',
+                'user' => $user
+            ]);
+
+        } catch (Exception $error) {
+            // Menangani kesalahan dan memberikan respons error
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $error
+            ], 'Authentication Failed', 500);
+        }
+    }
 }
