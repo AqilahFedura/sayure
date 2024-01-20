@@ -98,4 +98,13 @@ class UserController extends Controller
             ], 'Authentication Failed', 500);
         }
     }
+
+    public function logout(Request $request)
+    {
+        //kita buat token dimana yang diambil itu dari pada saat user regis dan login. setelah itu token dihapus
+
+        $token = $request ->user()->currentAccessToken()->delete(); //jadi disini token "sekarang" yang di hapus 
+        return ResponseFormatter::success($token, 'Token Revoked'); // isi variable tokennya $token itu boolean
+        //jadi laravel itu udh nyediain banyak fungsi biar kita gaperlu repot hapus token
+    }
 }
